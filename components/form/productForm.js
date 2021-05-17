@@ -11,10 +11,10 @@ const formReducer = (state, event) => {
     if(event.reset){
       return {
         description: " ",
-    price:  "",
-    name: "",
-    rating: ""
-      }
+       price:  "",
+       name: "",
+       rating: ""
+      };
     }
     return {
       ...state,
@@ -24,40 +24,50 @@ const formReducer = (state, event) => {
 
 
 
-function ProductForm ({product, categoriesRes,setSubmitting}) {
+function ProductForm ({product, categoriesRes,setTab}) {
+// CREATE PRPDUCT MUTATIONS
 
+console.log(setTab)
     const [_createProduct] =  useMutation(CREATE_PRODUCT,
        {
         onCompleted:(d)=>{
-          console.log(d)
-          setFormData(null,{
+          console.log(d);
+
+          setFormData({
             reset: true
-          })
+          });
+
+          setTab(0)
       
         }
     });
+// UPDATING RPODUCT MUTATIONS
     const [_updateProduct] =  useMutation(UPDATE_PRODUCT, {
       onCompleted:(d)=>{
         console.log(d)
+        setTab(0)
+
   
       }
   });
 
 
  
-
+//  FORM STATE MANAGEMENT
   const [formData, setFormData] = React.useReducer(formReducer, {
     description: product.description,
     price:  product.price,
     name: product.name,
-    rating: product.rating
+    rating: product.rating,
+    reset: false
   });
 
  
 
+
+  //TODO: LOAD CATEGORIES
+
     let selectCategoryId;
-
-
     let categoryOptions =[];
   // categoryOptions = categoriesRes.data.Category.map((cat)=>{
   //   const {id, name, label, md_icon} =  cat;
@@ -71,6 +81,7 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
   
   const handleChange = event => {
     //   handling change in text input 
+    // TODO: VALIDATION  ON INPUT
     const {name, value} = event.target;
     setFormData({
       name: event.target.name,
@@ -135,11 +146,11 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
          <Form.Group widths='equal'>
           <Form.Field>
             <label> Name </label>
-            <input placeholder='Name'  name="name" type="text" onChange={handleChange} defaultValue={product.name}/>
+            <input placeholder='Name'  name="name" type="text"    value={formData.name}onChange={handleChange} defaultValue={product.name}/>
           </Form.Field>
           <Form.Field>
             <label>price</label>
-            <input placeholder='price' type="number" name='price' onChange={handleChange} defaultValue={product.price}/>
+            <input placeholder='price' type="number" name='price' value={formData.price}onChange={handleChange} defaultValue={product.price}/>
           </Form.Field>
 
           </Form.Group>
@@ -155,14 +166,14 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
 
             <Form.Field>
             <label>Rating</label>
-            <input placeholder='rating' type="text" name='rating' onChange={handleChange} defaultValue={product.rating}/>
+            <input placeholder='rating' type="text" name='rating' onChange={handleChange} value={formData.rating} defaultValue={product.rating}/>
           </Form.Field>
           </Form.Group>
 
             <Form.TextArea label='Description' type="text" 
             name="description" onChange={handleChange} placeholder='Description'
             defaultValue={formData.description}
-             
+            value={formData.description}
             />
           <Button type='submit'>Submit</Button>
         </Form>
