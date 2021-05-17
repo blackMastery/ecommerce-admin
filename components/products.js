@@ -25,6 +25,15 @@ export default function Products({ category }) {
     });
   }
 
+
+
+  const [state, dispatch] = React.useReducer(exampleReducer, {
+    open: false,
+    size: undefined,
+  })
+  const { open, size } = state;
+
+  
   if (loading)
     return (
       <>

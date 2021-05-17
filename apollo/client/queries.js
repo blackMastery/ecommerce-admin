@@ -56,7 +56,7 @@ export const VIEWER = gql`
   }
 `;
 
-export const PRODUCTS = gql`
+export const _PRODUCTS = gql`
   query ProductsQuery($field: String!, $order: String!, $category: String) {
     products(sort: { field: $field, order: $order }, category: $category) {
       id
@@ -69,15 +69,30 @@ export const PRODUCTS = gql`
   }
 `;
 
+
+export const PRODUCTS = gql`
+query MyQuery {
+  Product {
+    description
+    id
+    img_url
+    name
+    price
+    rating
+    user_id
+  }
+}
+`
+
 export const PRODUCTS_BY_IDS = gql`
-  query productsByIds($id: [ID]!) {
-    productsById(id: $id) {
-      id
-      name
-      description
-      img_url
-      price
+  query productsByIds($id: Int!) {
+    Product_by_pk(id: $id) {
+      img_url,
+      name,
+      price,
+      description,
       rating
+      user_id
     }
   }
 `;
@@ -91,12 +106,13 @@ export const PRODUCTS_BY_IDS_PRICE = gql`
 `;
 
 export const CATEGORIES = gql`
-  query CategoriesQuery {
-    categories {
-      id
-      name
-      label
-      md_icon
-    }
+query MyQuery {
+  Category {
+    id
+    name
+    md_icon
+    label
   }
+}
+
 `;

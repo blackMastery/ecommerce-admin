@@ -1,28 +1,43 @@
 import { useMemo } from 'react';
 import { ApolloClient } from '@apollo/client';
+    const { HttpLink } = require('@apollo/client/link/http');
 
 import { cache } from './cache';
 
 let apolloClient;
 
-function createIsomorphLink() {
-  if (typeof window === 'undefined') {
-    const { SchemaLink } = require('@apollo/client/link/schema');
-    const { schema } = require('../schema');
-    return new SchemaLink({ schema });
-  } else {
-    const { HttpLink } = require('@apollo/client/link/http');
-    return new HttpLink({
-      uri: '/api/graphql',
-      credentials: 'same-origin',
-    });
-  }
-}
+// function createIsomorphLink() {
+//   if (typeof window === 'undefined') {
+//     const { SchemaLink } = require('@apollo/client/link/schema');
+//     const { schema } = require('../schema');
+//     return new SchemaLink({ schema });
+//   } else {
+//     return new HttpLink({
+//       uri: '/api/graphql',
+//       credentials: 'same-origin',
+//     });
+//   }
+// }
 
+
+
+const createHttpLink = (headers) => {
+  const httpLink = new HttpLink({
+    uri: 'https://hasura-mallnet-graphql-api.herokuapp.com/v1/graphql',
+    credentials: 'omit',
+    headers: {
+      "Content-type": "application/json",
+      Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJodHRwczovL2hhc3VyYS5pby9qd3QvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsiYWRtaW4iXSwieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoiYWRtaW4ifSwidXNlcl9pZCI6IjEifQ.52vmkQ2QwrNIm-L8zCrun7MonC3mXY3_LFs6K4t9Ud4"
+    }
+     // auth token is fetched on the server side
+    // fetch,
+  })
+  return httpLink;
+}
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: createIsomorphLink(),
+    link: createHttpLink(),
     cache: cache,
   });
 }
