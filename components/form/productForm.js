@@ -1,13 +1,19 @@
 import React from 'react'
-import { TextArea,Table,Modal,Form,Checkbox,Button, Container, Tab  } from 'semantic-ui-react'
+import { TextArea,Table,Modal,Form,Checkbox,Button, Container, Tab,Segment  } from 'semantic-ui-react'
 import { Dropdown } from 'semantic-ui-react'
 import { useMutation } from '@apollo/client';
 import { CREATE_PRODUCT, UPDATE_PRODUCT } from '../../apollo/client/mutations';
+import Link from 'next/link'
 
+import { useRouter } from 'next/router'
 
 
 const formReducer = (state, event) => {
+
+
+
     console.log(state, event)
+    // console.log()
     if(event.reset){
       return {
         description: " ",
@@ -25,21 +31,34 @@ const formReducer = (state, event) => {
 
 
 function ProductForm ({product, categoriesRes,setSubmitting}) {
-
+  const _router =  useRouter();
+  
     const [_createProduct] =  useMutation(CREATE_PRODUCT,
        {
         onCompleted:(d)=>{
+
           console.log(d)
-          setFormData(null,{
+          setFormData({
             reset: true
           })
-      
+         
+   _router.push({
+    pathname:'/',
+   query:{tab:0}});
+ 
         }
     });
+
+
     const [_updateProduct] =  useMutation(UPDATE_PRODUCT, {
       onCompleted:(d)=>{
         console.log(d)
   
+        
+   _router.push({
+    pathname:'/',
+   query:{tab:0}});
+ 
       }
   });
 
@@ -71,7 +90,6 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
   
   const handleChange = event => {
     //   handling change in text input 
-    const {name, value} = event.target;
     setFormData({
       name: event.target.name,
       value: event.target.value,
@@ -82,16 +100,10 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
 
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    // alert( JSON.stringify({formData, selectCategoryId}));
-    // setSubmitting(true);
-
+  e.preventDefault();
+  
   if (!product.id){  
      _createProduct({
-      options:{
-        onCompleted :(d) =>{
-        console.log("created",d)
-      }}, 
       variables: {
       name: formData.name,
       price: formData.price,
@@ -100,26 +112,20 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
       description: formData.description,
         img_url:"img_url"
     }});
-
-   
   }else {
-    _updateProduct({variables: {
-      name: formData.name,
-      price: formData.price,
-      rating: formData.rating,
-      description: formData.description,
-      img_url:"img_url",
-      id: product.id
-  },
-  
-  }
-  );
+      _updateProduct({variables: {
+        name: formData.name,
+        price: formData.price,
+        rating: formData.rating,
+        description: formData.description,
+        img_url:"img_url",
+        id: product.id
+         },
+    });
+   }
 
   }
-
-
-
-  }
+ 
 
   const catChange = (e, {value}) => {
       let mycategory  =  categoryOptions
@@ -127,19 +133,27 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
       selectCategoryId = mycategory.key;
   }
 
+  var delbutton
+  if (product.id !== undefined) {
+    delbutton =<Button  fluid size='large'>Delete </Button>
+  } else {
+    delbutton = <></>;
+  }
 
-//   console.log(formData)
+  console.log ("test",product.id > 0, product)
     return (
-        <>
+        <Container>
          <Form onSubmit={handleSubmit}>
+         <Segment stacked>
+
          <Form.Group widths='equal'>
           <Form.Field>
             <label> Name </label>
-            <input placeholder='Name'  name="name" type="text" onChange={handleChange} defaultValue={product.name}/>
+            <input placeholder='Name' value={formData.name || ''}  name="name" type="text" onChange={handleChange} />
           </Form.Field>
           <Form.Field>
             <label>price</label>
-            <input placeholder='price' type="number" name='price' onChange={handleChange} defaultValue={product.price}/>
+            <input placeholder='price' value={formData.price || ''} type="number" name='price' onChange={handleChange}/>
           </Form.Field>
 
           </Form.Group>
@@ -155,18 +169,32 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
 
             <Form.Field>
             <label>Rating</label>
-            <input placeholder='rating' type="text" name='rating' onChange={handleChange} defaultValue={product.rating}/>
+            <input placeholder='rating' type="text" name='rating' value={formData.rating || ''} onChange={handleChange}/>
           </Form.Field>
           </Form.Group>
 
             <Form.TextArea label='Description' type="text" 
-            name="description" onChange={handleChange} placeholder='Description'
-            defaultValue={formData.description}
+            value={formData.description || ''}
+            name="description"
+             onChange={handleChange} 
+             placeholder='Description'
+          
              
             />
-          <Button type='submit'>Submit</Button>
+          <Form.Group widths='equal'>
+
+          <Form.Field>
+            {delbutton}
+          </Form.Field>
+          <Form.Field>
+          <Button  type='submit' color='teal' fluid size='large' >SAVE</Button>
+          </Form.Field>
+
+
+          </Form.Group>
+      </Segment>
         </Form>
-        </>
+        </Container>
     )
 
 }

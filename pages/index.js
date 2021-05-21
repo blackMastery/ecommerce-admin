@@ -5,7 +5,7 @@ import ProductTable from '../components/productTable/Product-Table'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 
-function TableExampleSelectableRow  () { 
+function Index  () { 
  return (
  <>
  <Grid>
@@ -32,4 +32,4 @@ function TableExampleSelectableRow  () {
   </>
 )}
 
-export default TableExampleSelectableRow
+export default Index

@@ -91,7 +91,8 @@ export const PRODUCTS_BY_IDS = gql`
       name,
       price,
       description,
-      rating
+      rating,
+      id
       user_id
     }
   }

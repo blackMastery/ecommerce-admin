@@ -1,11 +1,13 @@
 import React from 'react'
-import { Table,Modal,Form,Checkbox,Button, Container, Tab  } from 'semantic-ui-react'
+import { Table,Modal,Form,Checkbox,Button, Container,  Tab  } from 'semantic-ui-react'
 import { useQuery } from '@apollo/client';
 import { PRODUCTS, SORT_PRODUCT_SECTION } from '../../apollo/client/queries';
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 import ProductForm from '../form/productForm.js';
 import { CATEGORIES } from '../../apollo/client/queries';
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+
 
 
 
@@ -23,6 +25,12 @@ function exampleReducer(state, action) {
   }
 }
 function ProductTable ({products}) {
+  const router = useRouter();
+  let {tab} = router.query;
+  let [tabIdx, setTab] = React.useState(tab);
+
+
+  console.log({tab})
   let category;
   var categoriesRes = useQuery(CATEGORIES)
   const sortQueryResult = useQuery(SORT_PRODUCT_SECTION);
@@ -170,10 +178,16 @@ function ProductTable ({products}) {
     },
   ]
 
+  const changeTab =  (e,d)=>{
+     console.log(d)
+      setTab(d.activeIndex)
+  }
  return (
 
        
-             <Container> <Tab menu={{ pointing: true }} panes={panes} /> </Container>
+             <Container> <Tab activeIndex={tabIdx} 
+             onTabChange={changeTab}
+             menu={{ pointing: true }} panes={panes} /> </Container>
     
   
  )
