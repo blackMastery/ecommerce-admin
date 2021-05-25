@@ -35,7 +35,10 @@ function ProductTable ({products}) {
   var categoriesRes = useQuery(CATEGORIES)
   const sortQueryResult = useQuery(SORT_PRODUCT_SECTION);
   const [submitting, setSubmitting] = React.useState(false);
+// TAB CONTROLLER 
+  const [tabIdx, setTab] = React.useState(0);
 
+console.log({tabIdx})
 
 
 
@@ -89,6 +92,7 @@ function ProductTable ({products}) {
   
   const panes = [
     {
+      
       menuItem: 'Products',
       render: () => <Tab.Pane attached={false}>
         
@@ -133,33 +137,6 @@ function ProductTable ({products}) {
     </Table.Body>
   </Table>
 
-  <Modal
-      size={size}
-      open={open}
-      onClose={() =>dispatch({ type: 'close', size: 'fullscreen',
-      curr_id:0, 
-       products: [...data.Product]
-   })}
-    >
-   <Modal.Header>Product</Modal.Header>
-   <Modal.Content>
-         <ProductForm product={_product}
-         setSubmitting={setSubmitting}
-      
-         categoriesRes={categoriesRes}/>
-            
-   </Modal.Content>
-   <Modal.Actions>
-     <Button negative onClick={() => dispatch({ type: 'close', size: 'fullscreen',
-      curr_id:0, 
-       products: [...data.Product]
-   })}>
-       Exit
-     </Button>
-     
-   </Modal.Actions>
- </Modal>
-
 </>
 
       
@@ -168,7 +145,8 @@ function ProductTable ({products}) {
     {
       menuItem: 'Create',
       render: () => <Tab.Pane attached={false}>
-         <ProductForm 
+         <ProductForm
+         setTab={setTab} 
          product={_product}
 
          categoriesRes={categoriesRes}

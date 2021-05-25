@@ -17,10 +17,10 @@ const formReducer = (state, event) => {
     if(event.reset){
       return {
         description: " ",
-    price:  "",
-    name: "",
-    rating: ""
-      }
+       price:  "",
+       name: "",
+       rating: ""
+      };
     }
     return {
       ...state,
@@ -30,29 +30,29 @@ const formReducer = (state, event) => {
 
 
 
-function ProductForm ({product, categoriesRes,setSubmitting}) {
-  const _router =  useRouter();
-  
+function ProductForm ({product, categoriesRes,setTab}) {
+// CREATE PRPDUCT MUTATIONS
+
+console.log(setTab)
     const [_createProduct] =  useMutation(CREATE_PRODUCT,
        {
         onCompleted:(d)=>{
+          console.log(d);
 
-          console.log(d)
           setFormData({
             reset: true
-          })
-         
-   _router.push({
-    pathname:'/',
-   query:{tab:0}});
- 
+          });
+
+          setTab(0)
+      
         }
     });
-
-
+// UPDATING RPODUCT MUTATIONS
     const [_updateProduct] =  useMutation(UPDATE_PRODUCT, {
       onCompleted:(d)=>{
         console.log(d)
+        setTab(0)
+
   
         
    _router.push({
@@ -64,19 +64,21 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
 
 
  
-
+//  FORM STATE MANAGEMENT
   const [formData, setFormData] = React.useReducer(formReducer, {
     description: product.description,
     price:  product.price,
     name: product.name,
-    rating: product.rating
+    rating: product.rating,
+    reset: false
   });
 
  
 
+
+  //TODO: LOAD CATEGORIES
+
     let selectCategoryId;
-
-
     let categoryOptions =[];
   // categoryOptions = categoriesRes.data.Category.map((cat)=>{
   //   const {id, name, label, md_icon} =  cat;
@@ -149,11 +151,11 @@ function ProductForm ({product, categoriesRes,setSubmitting}) {
          <Form.Group widths='equal'>
           <Form.Field>
             <label> Name </label>
-            <input placeholder='Name' value={formData.name || ''}  name="name" type="text" onChange={handleChange} />
+            <input placeholder='Name'  name="name" type="text"    value={formData.name}onChange={handleChange} defaultValue={product.name}/>
           </Form.Field>
           <Form.Field>
             <label>price</label>
-            <input placeholder='price' value={formData.price || ''} type="number" name='price' onChange={handleChange}/>
+            <input placeholder='price' type="number" name='price' value={formData.price}onChange={handleChange} defaultValue={product.price}/>
           </Form.Field>
 
           </Form.Group>
