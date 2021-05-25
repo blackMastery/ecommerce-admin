@@ -12,6 +12,15 @@ function ProductView ({prouct}) {
 
   const router = useRouter()
   const { id } = router.query
+
+  if(id === 0 ) return (
+    <Container>
+    <ProductForm
+      product={{}}
+    />
+    </Container>  
+  )
+
   var { data, loading, error }  = useQuery(PRODUCTS_BY_IDS,{
     variables: {
       id: id
@@ -35,8 +44,11 @@ function ProductView ({prouct}) {
     </>
   );
 
+
+
   return  (
   <Container>
+
   <ProductForm 
   product={data.Product_by_pk}
   />
