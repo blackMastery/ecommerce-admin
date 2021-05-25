@@ -7,6 +7,7 @@ import ProductForm from '../form/productForm.js';
 import { CATEGORIES } from '../../apollo/client/queries';
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import productState from '../../hooks/productStatHook'
 
 
 
@@ -24,14 +25,8 @@ function exampleReducer(state, action) {
       throw new Error('Unsupported action...')
   }
 }
-function ProductTable ({products}) {
-  const router = useRouter();
-  let {tab} = router.query;
-  let [tabIdx, setTab] = React.useState(tab);
-
-
-  console.log({tab})
-  let category;
+function ProductTable (){
+  var { data, loading, error } = useQuery(PRODUCTS);
   var categoriesRes = useQuery(CATEGORIES)
   const sortQueryResult = useQuery(SORT_PRODUCT_SECTION);
   const [submitting, setSubmitting] = React.useState(false);
@@ -56,28 +51,9 @@ console.log({tabIdx})
   const { open, size, curr_id, _product } = state;
 
 
-  if(submitting){
-    dispatch({ type: 'close', size: '',
-      curr_id:0, 
-       products: []
-   })
-  }
-
-  if (category) {
-    var { data, loading, error } = useQuery(PRODUCTS, {
-      variables: {
-        field: sortQueryResult.data.sortProductSection[0],
-        order: sortQueryResult.data.sortProductSection[1],
-        category: category,
-      },
-    });
-  } else if (!category) {
-    var { data, loading, error } = useQuery(PRODUCTS);
-  }
-  
-    if (loading)
-    return (
-      <>
+  if (loading)
+  return (
+    <>
       <p className="loading">Loading...</p>
       <style jsx>{`
         .loading {
@@ -89,7 +65,10 @@ console.log({tabIdx})
         `}</style>
     </>
   );
-  
+
+
+
+
   const panes = [
     {
       
@@ -99,6 +78,16 @@ console.log({tabIdx})
     <>
   <Table celled selectable>
     <Table.Header>
+    <Table.HeaderCell />
+        <Table.HeaderCell colSpan='4'>
+   
+          <Button size='small'>
+          <Link href={`/createProduct/`}  >
+            Create
+          </Link>
+          </Button>
+     
+        </Table.HeaderCell>
       <Table.Row>
       <Table.HeaderCell>edit</Table.HeaderCell>
         <Table.HeaderCell>id</Table.HeaderCell>
@@ -118,13 +107,6 @@ console.log({tabIdx})
         <Link href={`/create-editproduct/${product.id}`}  >
           edit
         </Link>
-        {/* <button onClick={() => dispatch({ type: 'open', size: 'small',
-         _product: product,
-         curr_id: product.id, 
-          products: [...data.Product]
-      }) }>
-         edit
-        </button> */}
         </Table.Cell>
 
         <Table.Cell>{product.id}</Table.Cell>
@@ -136,10 +118,7 @@ console.log({tabIdx})
      
     </Table.Body>
   </Table>
-
 </>
-
-      
       </Tab.Pane>,
     },
     {
@@ -156,18 +135,10 @@ console.log({tabIdx})
     },
   ]
 
-  const changeTab =  (e,d)=>{
-     console.log(d)
-      setTab(d.activeIndex)
-  }
- return (
 
-       
-             <Container> <Tab activeIndex={tabIdx} 
-             onTabChange={changeTab}
+ return (
+             <Container> <Tab  
              menu={{ pointing: true }} panes={panes} /> </Container>
-    
-  
  )
 
 }

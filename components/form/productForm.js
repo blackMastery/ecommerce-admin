@@ -2,18 +2,13 @@ import React from 'react'
 import { TextArea,Table,Modal,Form,Checkbox,Button, Container, Tab,Segment  } from 'semantic-ui-react'
 import { Dropdown } from 'semantic-ui-react'
 import { useMutation } from '@apollo/client';
-import { CREATE_PRODUCT, UPDATE_PRODUCT } from '../../apollo/client/mutations';
+import { CREATE_PRODUCT, UPDATE_PRODUCT, DELETE_PRODUCT } from '../../apollo/client/mutations';
 import Link from 'next/link'
 
 import { useRouter } from 'next/router'
 
 
 const formReducer = (state, event) => {
-
-
-
-    console.log(state, event)
-    // console.log()
     if(event.reset){
       return {
         description: " ",
@@ -80,16 +75,6 @@ console.log(setTab)
 
     let selectCategoryId;
     let categoryOptions =[];
-  // categoryOptions = categoriesRes.data.Category.map((cat)=>{
-  //   const {id, name, label, md_icon} =  cat;
-  //   return {
-  //     key:id,
-  //     value:name,
-  //     text:name
-
-  //   }
-  // })
-  
   const handleChange = event => {
     //   handling change in text input 
     setFormData({
@@ -103,19 +88,7 @@ console.log(setTab)
 
   const handleSubmit = (e) => {
   e.preventDefault();
-  
-  if (!product.id){  
-     _createProduct({
-      variables: {
-      name: formData.name,
-      price: formData.price,
-      rating: formData.rating,
-      user_id: 1,
-      description: formData.description,
-        img_url:"img_url"
-    }});
-  }else {
-      _updateProduct({variables: {
+   _updateProduct({variables: {
         name: formData.name,
         price: formData.price,
         rating: formData.rating,
@@ -124,7 +97,6 @@ console.log(setTab)
         id: product.id
          },
     });
-   }
 
   }
  
@@ -135,14 +107,6 @@ console.log(setTab)
       selectCategoryId = mycategory.key;
   }
 
-  var delbutton
-  if (product.id !== undefined) {
-    delbutton =<Button  fluid size='large'>Delete </Button>
-  } else {
-    delbutton = <></>;
-  }
-
-  console.log ("test",product.id > 0, product)
     return (
         <Container>
          <Form onSubmit={handleSubmit}>
@@ -186,7 +150,11 @@ console.log(setTab)
           <Form.Group widths='equal'>
 
           <Form.Field>
-            {delbutton}
+          <Button  fluid size='large'
+          onClick={()=>{
+            _deleteProduct({variables:{id:product.id}})
+          }}
+          >Delete </Button>
           </Form.Field>
           <Form.Field>
           <Button  type='submit' color='teal' fluid size='large' >SAVE</Button>

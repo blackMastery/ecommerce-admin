@@ -41,9 +41,13 @@ mutation CreateProduct(
     user_id: $user_id,
     description:$description
   }){
-    affected_rows
-    returning{
-      id
+    returning {
+      id,
+      description,
+      name,
+      user_id,
+      rating,
+      price 
     }
   }
 }
@@ -64,10 +68,26 @@ mutation UpdateProduct (
   rating: $rating,
    description: $description
   }, where: {id: {_eq: $id}}) {
-    affected_rows
-    returning{
-      name
+    returning {
+      id,
+      description,
+      name,
+      user_id,
+      rating,
+      price
+      
     }
   }
 }
 `;
+
+
+export const DELETE_PRODUCT = gql`
+mutation DeleteProduct($id:Int!){
+  delete_Product_by_pk(id: $id) {
+    id
+  }
+}
+
+
+`
