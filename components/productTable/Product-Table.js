@@ -79,7 +79,7 @@ console.log({tabIdx})
   <Table celled selectable>
     <Table.Header>
     <Table.HeaderCell />
-        <Table.HeaderCell colSpan='4'>
+        <Table.HeaderCell>
    
           <Button size='small'>
           <Link href={`/createProduct/`}  >
@@ -120,19 +120,7 @@ console.log({tabIdx})
   </Table>
 </>
       </Tab.Pane>,
-    },
-    {
-      menuItem: 'Create',
-      render: () => <Tab.Pane attached={false}>
-         <ProductForm
-         setTab={setTab} 
-         product={_product}
-
-         categoriesRes={categoriesRes}
-         />
-
-      </Tab.Pane>
-    },
+    }
   ]
 
 
